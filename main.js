@@ -9,15 +9,20 @@ var ctx = canvas.getContext('2d')
 //VARIABLES
 var interval;
 var frames = 0;
+var score = 0;
 var images = {
     logo: "",
     bg: "./Imagenes/bosque.jpg",
+    bg2: "./Imagenes/ciudad.png",
     trex1: "./Imagenes/trex1.png",
     trex2: "./Imagenes/trex2.png",
     obstaculo_roca: "./Imagenes/roca1.png",
-    obstaculo_tronco: "./Imagenes/tronco1.png"
+    obstaculo_tronco: "./Imagenes/tronco1.png",
+    taco: "./Imagenes/taco.png",
+    chilli:  "./Imagenes/Chilli.png"
 }
 var obstaculos = [];
+var tacos = [];
 
 
 //CLASES 
@@ -33,9 +38,11 @@ function Board(){
         if (frames > 1000){
             console.log('speed')
             this.x-=3
-        }  else {
+        } else if (frames > 2000){
+            this.x-=3.5
+        } else {
             console.log('normal')
-            this.x-=1.5
+            this.x-=2.5
         }
         if(this.x < - this.width) this.x = 0
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
@@ -45,7 +52,7 @@ function Board(){
     this.drawScore = function(){
         ctx.fillStyle = "black"
         ctx.font = "bold 24px Avenir"
-        ctx.fillText("Score: " + Math.floor(frames/60), 50,50)
+        ctx.fillText("Score: " + score, 50,50)
     }
 }
 
@@ -56,6 +63,7 @@ function Trex(){
     this.y = 215
     this.width = 65
     this.height = 100
+    this.live = 
     this.img1 = new Image()
     this.img1.src = images.trex1
     this.img2 = new Image()
@@ -76,7 +84,7 @@ function Trex(){
     }
 
     this.isTouching = function(item){
-        return (this.x < item.x + item.width) &&
+        return (this.x + 20 < item.x + item.width) &&
         (this.x + this.width > item.x) &&
         (this.y + (this.height*.85) < item.y + item.height) &&
         (this.y + this.height> item.y);
@@ -97,8 +105,20 @@ function Obstaculos(y, src){
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height) 
     }
 }
-     
 
+     //TACOS
+function Tacos(y){
+    this.x = canvas.width
+    this.y = y
+    this.width = 30
+    this.height = 25
+    this.image = new Image()
+    this.image.src = images.taco
+    this.draw = function(){
+        this.x--
+        ctx.drawImage(this.image,this.x,this.y,this.width,this.height) 
+    }
+}
 
 
 
@@ -106,6 +126,7 @@ function Obstaculos(y, src){
 var bg = new Board()
 var tRex = new Trex()
 var roca = new Obstaculos()
+var taco = new Tacos()
 
 
 //FUNCIONES PRINCIPALES
@@ -114,15 +135,20 @@ function start(){
 }
 function update(){
     frames++
+    if (frames % 60 === 0) {
+        score++;
+    }
+    if (score>5){
+        bg.image.src = images.bg2;
+    }
     ctx.clearRect(0,0,canvas.width, canvas.height)
     bg.draw()
     bg.drawScore()
     drawRocas()
     // bliss()
+    drawTacos()
     tRex.draw()
     checkTrexCollition()
-    // aumentarVelocidad()
-    console.log(frames)
     
     
 }
@@ -136,9 +162,14 @@ function gameOver(){
 
 
 function generarRoca(){
-    if(frames%250===0){
-        var y = Math.floor(Math.random()*60 + 300)
-        obstaculos.push(new Obstaculos (y))
+    if(frames%300===0){
+        if (score<=10) {
+            var y = Math.floor(Math.random()*60 + 300)
+            obstaculos.push(new Obstaculos (y))
+        } else {
+            var y = Math.floor(Math.random()*60 + 350)
+            obstaculos.push(new Obstaculos (y, images.chilli))
+        }
     }
     if (frames%550===0){
         var y = Math.floor(Math.random()*60 + 300)
@@ -154,22 +185,35 @@ function drawRocas(){
     })
 }
 
+function generarTacos(){
+    if(frames%1000===0){
+        var y = Math.floor(Math.random()*60 + 300)
+        tacos.push(new Tacos(y))
+    }
+}
+
+function drawTacos(){
+    generarTacos()
+    tacos.forEach(function(taco){
+        taco.draw()
+    })
+}
+
+
+
 function checkTrexCollition(){
     for(var roca of obstaculos){
         if(tRex.isTouching(roca)){
             gameOver()
         }
     }
+    for(var i=0; i<tacos.length; i++){
+        if(tRex.isTouching(tacos[i])){
+            tacos.splice(i,1);
+            score+=50;
+        }
+    }
 }
-
-// function aumentarVelocidad (){
-//     if(frames === 2000){
-//         this.x-= 1.5
-//         if(this.x < -this.width) this.x = 0
-//         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
-//         ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height)
-//     }
-// }
 
 
 //LISTENERS
