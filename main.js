@@ -10,8 +10,10 @@ var ctx = canvas.getContext('2d')
 var interval;
 var frames = 0;
 var score = 0;
+var velocidad = 0;
+var numTaco = 0;
 var images = {
-    logo: "",
+    logo: "./Imagenes/logo.png",
     bg: "./Imagenes/bosque.jpg",
     bg2: "./Imagenes/ciudad.png",
     trex1: "./Imagenes/trex1.png",
@@ -19,10 +21,12 @@ var images = {
     obstaculo_roca: "./Imagenes/roca1.png",
     obstaculo_tronco: "./Imagenes/tronco1.png",
     taco: "./Imagenes/taco.png",
-    chilli:  "./Imagenes/Chilli.png"
+    obstaculo_carro1: "./Imagenes/carro1.png",
+    obstaculo_carro2: "./Imagenes/carro2.png",
 }
 var obstaculos = [];
 var tacos = [];
+var audioBack = new Audio()
 
 
 //CLASES 
@@ -34,25 +38,27 @@ function Board(){
     this.height = canvas.height
     this.image = new Image()
     this.image.src = images.bg
+    this.velocidad=1
     this.draw = function(){
-        if (frames > 1000){
-            console.log('speed')
-            this.x-=3
-        } else if (frames > 2000){
-            this.x-=3.5
-        } else {
-            console.log('normal')
-            this.x-=2.5
+        if(Math.random()<1-(Math.pow(.9,frames/100000))){
+            this.velocidad+=2
         }
+        this.x -= this.velocidad
         if(this.x < - this.width) this.x = 0
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
         ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height) 
-    }
+    }.bind(this);
 
     this.drawScore = function(){
         ctx.fillStyle = "black"
         ctx.font = "bold 24px Avenir"
-        ctx.fillText("Score: " + score, 50,50)
+        ctx.fillText("Score: " + score, 50,60)
+    }
+
+    this.drawTacosNum = function(){
+        ctx.fillStyle = "black"
+        ctx.font = "bold 24px Avenir"
+        ctx.fillText("Tacos: " + numTaco, 700,60)
     }
 }
 
@@ -63,7 +69,6 @@ function Trex(){
     this.y = 215
     this.width = 65
     this.height = 100
-    this.live = 
     this.img1 = new Image()
     this.img1.src = images.trex1
     this.img2 = new Image()
@@ -84,38 +89,57 @@ function Trex(){
     }
 
     this.isTouching = function(item){
-        return (this.x + 20 < item.x + item.width) &&
+        return (this.x + 20 < item.x + item.width )&&
         (this.x + this.width > item.x) &&
         (this.y + (this.height*.85) < item.y + item.height) &&
-        (this.y + this.height> item.y);
+        (this.y + this.height> item.y + 20);
     }
 }
     
     //OBSTACULOS
 
-function Obstaculos(y, src){
+function Obstaculos(y, src, width,height){
     this.x = canvas.width
     this.y = y
-    this.width = 30
-    this.height = 30
+    this.width = width || 30
+    this.height = height || 30
     this.image = new Image()
     this.image.src = src ? src : images.obstaculo_roca
+    this.velocidad=1
     this.draw = function(){
-        this.x--
+        this.x -= this.velocidad
+        if (frames > 1000){
+            console.log('speed')
+            this.x-=4
+        } else if (frames > 2000){
+            this.x-=5
+        } else {
+            console.log('normal')
+            this.x-=3
+        }
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height) 
     }
 }
-
      //TACOS
 function Tacos(y){
     this.x = canvas.width
     this.y = y
-    this.width = 30
-    this.height = 25
+    this.width = 35
+    this.height = 30
     this.image = new Image()
     this.image.src = images.taco
+    this.velocidad=1
     this.draw = function(){
-        this.x--
+        if (frames > 1000){
+            console.log('speed')
+            this.x-=4
+        } else if (frames > 2000){
+            this.x-=5
+        } else {
+            console.log('normal')
+            this.x-=3
+        }
+        // this.x--
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height) 
     }
 }
@@ -125,55 +149,98 @@ function Tacos(y){
 //INSTANCIAS
 var bg = new Board()
 var tRex = new Trex()
-var roca = new Obstaculos()
-var taco = new Tacos()
+
 
 
 //FUNCIONES PRINCIPALES
 function start(){
+    obstaculos = []
+    bg.image.src=images.bg
+    tacos = []
+    frames = 0
+    score =0
+    tRex = new Trex()
     if(!interval) interval = setInterval(update,1000/60)
+    audioBack.src = "./Audio/quiero_tacos.mp3"
+    audioBack.play()
+    audioBack.onended = function(){
+        audioBack.src = "./Audio/gorillaz-on-melancholy-hill-instrumental.mp3"
+        audioBack.load()
+        audioBack.play()
+    }
 }
 function update(){
     frames++
+    console.log(frames)
     if (frames % 60 === 0) {
         score++;
     }
-    if (score>5){
+    if (score>20){
         bg.image.src = images.bg2;
     }
     ctx.clearRect(0,0,canvas.width, canvas.height)
     bg.draw()
     bg.drawScore()
+    bg.drawTacosNum()
     drawRocas()
     // bliss()
     drawTacos()
     tRex.draw()
     checkTrexCollition()
     
-    
 }
 function gameOver(){
     clearInterval(interval)
     interval = null
+    ctx.fillStyle = "red"
+    ctx.font = "bold 80px Arial"
+    ctx.fillText("GAME OVER", 180,150)
+    ctx.fillStyle = "black"
+    ctx.font = "bold 40px Arial"
+    ctx.fillText("Tu score: " + score,300,300)
+    ctx.font = "bold 20px Arial"
+    ctx.fillText("Presiona 'Return' para reiniciar", 250,350)
+    audioBack.pause()
+    audioBack.currentTime= 0
+    var audio = new Audio(src = "./Audio/mis_tacos.mp3")
+    audio.play()
     
 }
 
 //FUNCIONES AUXILIARES
 
+function drawCover(){
+    var img = new Image()
+    img.src = images.logo
+    img.onload = function(){
+        bg.draw()
+        ctx.drawImage(img, 180,100,300,150)
+        ctx.font = "bold 24px Avenir"
+        ctx.fillText("Presiona la tecla 'Return' para comenzar", 50,300)
+    }
+}
+
+
 
 function generarRoca(){
-    if(frames%300===0){
-        if (score<=10) {
+    if(frames%109===0){
+        if (score<=20) {
             var y = Math.floor(Math.random()*60 + 300)
             obstaculos.push(new Obstaculos (y))
         } else {
-            var y = Math.floor(Math.random()*60 + 350)
-            obstaculos.push(new Obstaculos (y, images.chilli))
+            var y = Math.floor(Math.random()*55 + 300)
+            obstaculos.push(new Obstaculos (y, images.obstaculo_carro1, 50, 50))
         }
     }
-    if (frames%550===0){
-        var y = Math.floor(Math.random()*60 + 300)
-        obstaculos.push(new Obstaculos(y, images.obstaculo_tronco))
+    if (frames%479===0){
+        if (score<=20){
+            var y = Math.floor(Math.random()*60 + 300)
+            obstaculos.push(new Obstaculos(y, images.obstaculo_tronco))
+        }else{
+            var y = Math.floor(Math.random()*55 + 300)
+            obstaculos.push(new Obstaculos (y, images.obstaculo_carro2, 50, 50))
+        }
+        
     }
 }
 
@@ -186,7 +253,7 @@ function drawRocas(){
 }
 
 function generarTacos(){
-    if(frames%1000===0){
+    if(frames%613===0){
         var y = Math.floor(Math.random()*60 + 300)
         tacos.push(new Tacos(y))
     }
@@ -211,6 +278,7 @@ function checkTrexCollition(){
         if(tRex.isTouching(tacos[i])){
             tacos.splice(i,1);
             score+=50;
+            numTaco++
         }
     }
 }
@@ -220,6 +288,8 @@ function checkTrexCollition(){
 
 addEventListener('keydown', function(e){
     switch (e.keyCode){
+        case 13:
+            return start()
         case 37:
             tRex.y -= 30
             break
@@ -229,8 +299,6 @@ addEventListener('keydown', function(e){
     }
 })
 
-addEventListener('keyup', function(){
 
-})
-start()
 
+drawCover()
