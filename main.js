@@ -3,7 +3,7 @@ var canvas = document.getElementById('canvas')
 var ctx = canvas.getContext('2d')
 
 // function bliss(){
-//     ctx.fillRect(canvas.width - 100,330,30,30)
+//     ctx.fillRect(canvas.width - 150,290,30,30)
 // }
 
 //VARIABLES
@@ -11,11 +11,11 @@ var interval;
 var frames = 0;
 var images = {
     logo: "",
-    bg: "./Imagenes/bosque.png",
+    bg: "./Imagenes/bosque.jpg",
     trex1: "./Imagenes/trex1.png",
     trex2: "./Imagenes/trex2.png",
-    obstaculo_roca: "./Imagenes/roca.png",
-    obstaculo_tronco: "./Imagenes/tronco.png"
+    obstaculo_roca: "./Imagenes/roca1.png",
+    obstaculo_tronco: "./Imagenes/tronco1.png"
 }
 var obstaculos = [];
 
@@ -30,10 +30,16 @@ function Board(){
     this.image = new Image()
     this.image.src = images.bg
     this.draw = function(){
-        this.x--
-        if(this.x < -this.width) this.x = 0
+        if (frames > 1000){
+            console.log('speed')
+            this.x-=3
+        }  else {
+            console.log('normal')
+            this.x-=1.5
+        }
+        if(this.x < - this.width) this.x = 0
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
-        ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height)
+        ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height) 
     }
 
     this.drawScore = function(){
@@ -65,15 +71,15 @@ function Trex(){
       }
 
     this.boundaries = function(){
-        if(this.y < 190) this.y =190
-        if (this.y > 250) this.y = 250
+        if(this.y < 215) this.y =215
+        if (this.y > 300) this.y = 300
     }
 
     this.isTouching = function(item){
         return (this.x < item.x + item.width) &&
         (this.x + this.width > item.x) &&
-        (this.y < item.y + item.height) &&
-        (this.y + this.height > item.y);
+        (this.y + (this.height*.85) < item.y + item.height) &&
+        (this.y + this.height> item.y);
     }
 }
     
@@ -83,7 +89,7 @@ function Obstaculos(y, src){
     this.x = canvas.width
     this.y = y
     this.width = 30
-    this.height = 25
+    this.height = 30
     this.image = new Image()
     this.image.src = src ? src : images.obstaculo_roca
     this.draw = function(){
@@ -111,10 +117,13 @@ function update(){
     ctx.clearRect(0,0,canvas.width, canvas.height)
     bg.draw()
     bg.drawScore()
-    tRex.draw()
     drawRocas()
-    //bliss()
+    // bliss()
+    tRex.draw()
     checkTrexCollition()
+    // aumentarVelocidad()
+    console.log(frames)
+    
     
 }
 function gameOver(){
@@ -127,12 +136,12 @@ function gameOver(){
 
 
 function generarRoca(){
-    if(frames%150===0){
-        var y = Math.floor(Math.random()*50 + 280)
+    if(frames%250===0){
+        var y = Math.floor(Math.random()*60 + 300)
         obstaculos.push(new Obstaculos (y))
     }
-    if (frames%350===0){
-        var y = Math.floor(Math.random()*50 + 280)
+    if (frames%550===0){
+        var y = Math.floor(Math.random()*60 + 300)
         obstaculos.push(new Obstaculos(y, images.obstaculo_tronco))
     }
 }
@@ -152,6 +161,16 @@ function checkTrexCollition(){
         }
     }
 }
+
+// function aumentarVelocidad (){
+//     if(frames === 2000){
+//         this.x-= 1.5
+//         if(this.x < -this.width) this.x = 0
+//         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
+//         ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height)
+//     }
+// }
+
 
 //LISTENERS
 
