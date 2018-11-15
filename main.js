@@ -312,15 +312,19 @@ addEventListener('keydown', function(e){
         case 13:
             return start()
         case 37:
+            e.preventDefault()
             tRex.y -= 25
             break
         case 38:
+        e.preventDefault()
             tRex.y -= 25
             break
         case 39:
+        e.preventDefault()
             tRex.y += 25
             break  
         case 40:
+        e.preventDefault()
             tRex.y += 25
             break   
     }
