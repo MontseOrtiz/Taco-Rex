@@ -204,16 +204,30 @@ function gameOver(){
     ctx.fillStyle = "white"
     ctx.font = "bold 80px Monaco"
     ctx.fillText("GAME OVER", 250,150)
-    ctx.fillStyle = "black"
-    ctx.font = "bold 40px Monaco"
-    ctx.fillText("Tacos: " + numTaco ,360,250)
-    ctx.font = "bold 20px Monaco"
-    ctx.fillText("Presiona 'Return' para reiniciar", 260,360)
+    // ctx.fillStyle = "black"
+    // ctx.font = "bold 40px Monaco"
+    // ctx.fillText("Tacos: " + numTaco ,360,250)
+    // ctx.font = "bold 20px Monaco"
+    // ctx.fillText("Presiona 'Return' para reiniciar", 260,360)
     audioBack.pause()
     audioBack.currentTime= 0
     var audio = new Audio(src = "./Audio/mis_tacos.mp3")
     audio.play()
-    .push(score)
+    turnos.push(numTaco)
+    if(turnos.length === 2){
+        ctx.fillStyle = "black"
+        ctx.font = "bold 40px Monaco"
+        ctx.fillText("Jugador 1-- Tacos " + turnos[0] ,160,250)
+        ctx.fillText("Jugador 2 -- Tacos " + turnos[1] ,160,320)
+        ctx.font = "bold 20px Monaco"
+        ctx.fillText("Presiona 'Return' para reiniciar", 260,360)
+    } else{
+        ctx.fillStyle = "black"
+        ctx.font = "bold 40px Monaco"
+        ctx.fillText("Jugador 1 -- Tacos " + turnos[0] ,170,250)
+        ctx.font = "bold 20px Monaco"
+        ctx.fillText("Presiona 'Return' para jugador 2", 260,360)
+    }
     
 }
 
