@@ -15,7 +15,7 @@ var numTaco = 0;
 var images = {
     logo: "./Imagenes/LOGO1.png",
     bg: "./Imagenes/fondo1.png",
-    bg2: "./Imagenes/ciudad.png",
+    bg2: "./Imagenes/Ciudad.png",
     trex1: "./Imagenes/trex1.png",
     trex2: "./Imagenes/trex2.png",
     obstaculo_roca: "./Imagenes/roca1.png",
