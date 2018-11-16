@@ -28,9 +28,9 @@ var images = {
 var obstaculos = [];
 var tacos = [];
 var audioBack = new Audio()
-// var velocidad = 1
+var velocidad = 1
 var btnPlay = document.getElementById('jugar')
-var btnInst = document.getElementById('instrucciones')
+// var btnInst = document.getElementById('instrucciones')
 var turnos = []
 
 
@@ -43,12 +43,12 @@ function Board(){
     this.height = canvas.height
     this.image = new Image()
     this.image.src = images.bg
-    this.velocidad= 1
+    // this.velocidad= 1
     this.draw = function(){
         if(Math.random()<1-(Math.pow(.9,frames/1000000))){
-            this.velocidad+=2
+            velocidad+=2
         }
-        this.x -= this.velocidad
+        this.x -= velocidad
         if(this.x < - this.width) this.x = 0
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
         ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height) 
@@ -113,14 +113,12 @@ function Obstaculos(y, src, width,height){
     this.image.src = src ? src : images.obstaculo_roca
     this.draw = function(){
         if (frames > 1000){
-            console.log('speed')
             this.x-=4
         } else if (frames > 2000){
             this.x-=5
         } else if(frames > 3000){
             this.x -= 6
         }else {
-            console.log('normal')
             this.x-=3.5
         }
 
@@ -138,12 +136,12 @@ function Tacos(y){
     this.image.src = images.taco
     this.draw = function(){
         if (frames > 1000){
-            console.log('speed')
             this.x-=4
         } else if (frames > 2000){
             this.x-=5
-        } else {
-            console.log('normal')
+        } else if(frames > 3000){
+            this.x -= 6
+        }else {
             this.x-=3.5
         }
 
@@ -164,7 +162,10 @@ function start(){
     numTaco = 0
     frames = 0
     score =0
-    // velocidad = 1
+    velocidad = 1
+    // if(turnos.length===2){
+    //     turnos[]
+    //}
     // turnos=[]
     tRex = new Trex()
     if(!interval) interval = setInterval(update,1000/60)
@@ -180,10 +181,11 @@ function start(){
 function update(){
     frames++
     console.log(frames)
-    if (frames % 60 === 0) {
+    if (frames % 50 === 0) {
         score++;
     }
-    if (score>100){
+    console.log(score)
+    if (score>=50){
         bg.image.src = images.bg2;
     }
     ctx.clearRect(0,0,canvas.width, canvas.height)
@@ -214,7 +216,6 @@ function gameOver(){
     var audio = new Audio(src = "./Audio/mis_tacos.mp3")
     audio.play()
     turnos.push(numTaco)
-    console.log(turnos[0])
     if(turnos.length === 2){
         ctx.fillStyle = "white"
         ctx.font = "bold 40px Monaco"
@@ -223,8 +224,9 @@ function gameOver(){
         ctx.fillStyle = "red"
         ctx.font = "bold 20px Monaco"
         ctx.fillText("Presiona 'Return' para reiniciar", 350,360)
+        turnos=[]
     } else{
-        ctx.fillStyle = "black"
+        ctx.fillStyle = "white"
         ctx.font = "bold 40px Monaco"
         ctx.fillText("Jugador 1 -- Tacos " + turnos[0] ,270,230)
         ctx.fillStyle = "red"
@@ -248,7 +250,7 @@ function drawCover(){
 
 function generarRoca(){
     if(frames%101===0){
-        if (score<=100) {
+        if (score<=50) {
             var y = Math.floor(Math.random()*60 + 300)
             obstaculos.push(new Obstaculos (y))
         } else {
@@ -257,7 +259,7 @@ function generarRoca(){
         }
     }
     if (frames%211===0){
-        if (score<=100){
+        if (score<=50){
             var y = Math.floor(Math.random()*60 + 300)
             obstaculos.push(new Obstaculos(y, images.obstaculo_tronco))
         }else{
@@ -338,7 +340,7 @@ addEventListener('keydown', function(e){
 btnPlay.onclick = function(){
     start()
     btnPlay.classList.add("ocultar")
-    btnInst.classList.add("ocultar")
+    // btnInst.classList.add("ocultar")
 }
 
 //INSTRUCCIONES
