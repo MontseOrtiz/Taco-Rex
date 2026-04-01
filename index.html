@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +7,24 @@
     <link rel="stylesheet" href="style.css">
     <title>Taco Rex</title>
 </head>
-<body background= "Imagenes/fondo .png">
+<body>
+    <main class="app-shell">
+        <header id="logo">
+            <img src="./Imagenes/LOGO1.png" alt="Taco Rex" width="400" height="150">
+            <p class="subtitle">Arcade runner hecho con JavaScript + Canvas</p>
+        </header>
 
-    <section id="logo">
-        <img src="./Imagenes/LOGO1.png" alt="Taco Rex" width="400" height="150">
-    </section>
-    <section id="canvasC">
-            <canvas id="canvas" width="900" height="400"></canvas> 
+        <section id="canvasC" aria-label="Juego Taco Rex">
+            <canvas id="canvas" width="900" height="400"></canvas>
             <button id="jugar">Jugar</button>
-                       
-    </section>
-    <section id="instru">
-        <img class="inst" src="./Imagenes/instrucciones.png" alt="Instrucciones" width="950" height="400"> 
-    </section>
+            <p class="hint">Controles: Enter para iniciar, flechas para mover, P para pausar</p>
+        </section>
+
+        <section id="instru" aria-label="Instrucciones">
+            <img class="inst" src="./Imagenes/instrucciones.png" alt="Instrucciones del juego" width="950" height="400">
+        </section>
+    </main>
+
     <script src="main.js"></script>
 </body>
 </html>

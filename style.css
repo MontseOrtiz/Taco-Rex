@@ -1,64 +1,138 @@
-*{
+:root {
+    --bg-top: #ffe4b5;
+    --bg-bottom: #f6f0de;
+    --card: rgba(255, 255, 255, 0.75);
+    --ink: #1f2a30;
+    --accent: #ff8c42;
+    --accent-dark: #d96b1f;
+    --line: rgba(31, 42, 48, 0.18);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.6), transparent 35%),
+        radial-gradient(circle at 85% 15%, rgba(255, 196, 120, 0.45), transparent 35%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+}
+
+.app-shell {
+    width: min(1080px, 100% - 2rem);
     margin: 0 auto;
-}
-#logo{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;  
-    height: 200px;
-    width: 100%;
-    background-color:rgba(177, 245, 217, 0.2);;
-
-    
+    padding: 1.5rem 0 2rem;
 }
 
-#canvasC{
+#logo {
     display: flex;
-    justify-content: center;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(209, 177, 245, 0.2); 
+    gap: 0.45rem;
+    padding: 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--card);
+    backdrop-filter: blur(2px);
+}
+
+.subtitle {
+    margin: 0;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+#canvasC {
     position: relative;
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 1rem;
+    background: var(--card);
+    display: grid;
+    gap: 0.9rem;
+    justify-items: center;
 }
 
-button{
-    background-color: rgb(177, 231, 245);
-    width: 280px;
-    height: 70px;
-    border-style: groove;
-    border-radius: 15px;
-    border-width: 5px;
-    border-color: gray;
-    font-size: 28px;
+#canvas {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    border-radius: 12px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 45px rgba(31, 42, 48, 0.2);
+}
+
+button {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.9rem 2.6rem;
+    min-width: 220px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+    box-shadow: 0 10px 24px rgba(217, 107, 31, 0.35);
+    cursor: pointer;
+    transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(217, 107, 31, 0.4);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.hint {
+    margin: 0;
+    font-size: 0.88rem;
     text-align: center;
-    margin-top: 40px;
-
-    
-}
-#jugar{
-    position: absolute;
-    top: 120px;
-    left: 0;
-    right: 0;
-
-    
 }
 
-/* #instrucciones{
-    position: absolute;
-    top: 200px;
-    left: 0;
-    right: 0;
-} */
+#instru {
+    margin-top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 0.8rem;
+    background: var(--card);
+}
 
-.ocultar{
+.inst {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+.ocultar {
     display: none;
 }
 
-#instru{
-    display: flex;
-}
-.inst{
-    justify-content: center;
+@media (max-width: 800px) {
+    .app-shell {
+        width: min(1080px, 100% - 1rem);
+        padding-top: 1rem;
+    }
+
+    #logo img {
+        width: min(80vw, 360px);
+        height: auto;
+    }
+
+    button {
+        width: 100%;
+        max-width: 280px;
+    }
 }
