@@ -5,6 +5,8 @@ You control a T-Rex that dodges obstacles and collects tacos while speed increas
 
 This repository is part of my frontend portfolio and reflects both the original idea and a modernized pass focused on code quality, performance, and user experience.
 
+https://montseortiz.github.io/Taco-Rex/
+
 ## Installation
 
 1. Clone the repository:
@@ -76,13 +78,6 @@ python3 -m http.server 5173
 - Updated keyboard handling using modern key detection.
 - Refreshed UI styles for a more portfolio-ready look while preserving the original vibe.
 
-## Next Improvements
-
-- Modularize code into `core/`, `entities/`, and `systems/` files.
-- Add object pooling for obstacles and tacos.
-- Add hi-DPI canvas scaling and resize strategy.
-- Add high score persistence with `localStorage`.
-- Add lightweight particle effects and small camera shake.
 
 ## License
 
